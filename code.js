@@ -4,19 +4,17 @@ let events = [
         name: "הסברה שבועית",
         date: "2026-05-04",
         time: "19:00",
-        location: "אולם נמר",
+        location: "אולם צ'רה",
         description: "הסברה שבועית של מדור גפ''ה ",
-        // participants: "כלל מפח''ט"
         branches: ["מפח''ט"],
         types: ["כל"]
     },
     {
         name: "מרכז מורשת צה''ל",
-        date: "2026-05-11",
+        date: "2026-05-17",
         time: "12:00",
-        location: "יד ושם בבהדי''ם",
-        description: "הכנת מפקדים למרכז מורשת - קצינים",
-        // participants: "קצינים"
+        location: "מרכז מורשת צה''ל בבהדי''ם",
+        description: "הכנת מפקדים למרכז מורשת - קצינים ונגדים",
         branches: ["כל"],
         types: ["קבע"]
     },
@@ -24,10 +22,9 @@ let events = [
         name: "הסברה שבועית",
         date: "2026-05-11",
         time: "19:00",
-        location: "אולם 17",
-        description: "הרצאה של אלה שוורצמן - הבחירה בחיים",
-        // participants: "כלל מפח''ט, ענף חת''ק",
-        branches: ["מפח''ט", "חת''ק"],
+        location: "אולם צ'רה",
+        description: "ל''ג בעומר",
+        branches: ["מפח''ט"],
         types: ["כל"]
 
     },
@@ -35,45 +32,20 @@ let events = [
         name: "הסברה שבועית",
         date: "2026-05-18",
         time: "19:00",
-        location: "אולם נמר",
-        description: "מבצע ליידי",
-        // participants: "כלל מפח''ט"
+        location: "אולם צ'רה",
+        description: "יום ירושלים",
         branches: ["מפח''ט"],
         types: ["כל"]
 
     },
     {
-        name: "ערב מסביב למדורה",
-        date: "2026-05-19",
-        time: "17:30",
-        location: "רחבת נגמשים",
-        description: "ערב מהנה בסימן אחדות עם המון הפתעות.",
-        // participants: "כלל מפח''ט, ענפים"
-        // branches: ["מפח''ט", "חתק", "חיר ורקם"],
-        branches: ["כל"],
-        types: ["סדיר", "קבע"]
-
-    },
-    {
-        name: "הסברה שבועית",
-        date: "2026-05-25",
-        time: "19:00",
-        location: "אולם נמר",
-        description: "הסברה שבועית",
-        // participants: "כלל מפח''ט"
+        name: "התנדבות במשק",
+        date: "2026-05-28",
+        time: "10:00",
+        location: "מושב הודיה",
+        description: "התנדבות במשק לציון חג השבועות",
         branches: ["מפח''ט"],
         types: ["סדיר", "קבע"]
-
-    },
-    {
-        name: "הפרשת חלה",
-        date: "2026-05-27",
-        time: "18:30",
-        location: "חדר אוכל",
-        description: "הפרשת חלה בסימן הודיה לבנות החטיבה",
-        // participants: "חת''ק, מפח''ט"
-        branches: ["מפח''ט", "חת''ק"],
-        types: ["כל"]
 
     }
 ];
@@ -193,11 +165,15 @@ function createMonthlyCalendar() {
     monthlyBtn.classList.add("selected-calendar-btn");
 
     // getting the current nav elements
-    let branchName = sessionStorage.getItem("branchName");
-    let type = sessionStorage.getItem("type");
+    const branchName = sessionStorage.getItem("branchName") || "";
+    const type = sessionStorage.getItem("type") || "";
 
-    // document.getElementById("current-calendar-nav").innerHTML = `${branchName} - ${type}`;
-    document.getElementById("current-calendar-nav").innerHTML = `${mapToHebrew(branchName, "title")} - ${mapToHebrew(type, "title")}`;
+    document.getElementById("current-calendar-nav").innerHTML = 
+        branchName && type ? `${mapToHebrew(branchName, "title")} - ${mapToHebrew(type, "title")}` : "";
+
+    // if (!branchName || !type) {
+    // window.location.href = "index.html";
+    // }   
 
     //get dates and elements
     const today = new Date();
@@ -346,8 +322,8 @@ function createWeeklyCalendar() {
 
     //get all week numbers in this month
     for (let day = 1; day <= lastDay; day++) {
-        const date = new Date(year, month, day);+
-        weeksSet.add(getWeekNumber(date));
+        const date = new Date(year, month, day); +
+            weeksSet.add(getWeekNumber(date));
     }
     const weeks = Array.from(weeksSet).sort((a, b) => a - b);
 
@@ -535,7 +511,7 @@ function formatParticipants(event) {
         "מפחט": "מפח''ט",
         "חירורקם": "חיר ורקם",
         "חתק": "חת''ק",
-    }; 
+    };
     branches = branches.map(b => backToAbnormal[b] || b);
 
     // in case of all branches and all types
@@ -586,6 +562,8 @@ function normalize(str) {
 }
 
 function mapToHebrew(value, type) {
+    if (!value) return "";
+
     const mapButton = {
         "mafhat": "מפח''ט",
         "hir-varekem": "חיר ורקם",
@@ -600,7 +578,12 @@ function mapToHebrew(value, type) {
         "חת''ק": "ענף חת''ק",
 
         "סדיר": "משרתי סדיר",
-        "קבע": "משרתי קבע"
+        "קבע": "משרתי קבע",
+
+
+        "מפחט": "מפח''ט",
+        "חירורקם": "ענף חיר ורקם",
+        "חתק": "ענף חת''ק"
     };
     if (type === "title") { return mapTitle[value] || value; }
     else if (type === "button") { return mapButton[value] || value; }
