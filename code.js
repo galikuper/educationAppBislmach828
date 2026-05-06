@@ -263,6 +263,7 @@ function eventPopUp(date, dayEvents) {
         const popupDesc = document.createElement("p");
         const popupBottomLinePopup = document.createElement("div");
         const locationAndIcon = document.createElement("div");
+        const participantsAndIcon = document.createElement("div");
         const popupLocation = document.createElement("p");
         const popupParticipants = document.createElement("p");
 
@@ -274,7 +275,10 @@ function eventPopUp(date, dayEvents) {
         popupDesc.classList.add("popup-event-description");
         popupBottomLinePopup.classList.add("bottom-line-popup");
         locationAndIcon.classList.add("location-and-icon");
+        participantsAndIcon.classList.add("participents-and-icon");
         popupLocation.classList.add("popup-event-location");
+        popupParticipants.classList.add("popup-event-participants");
+
 
         popupTime.textContent = formatHebrewDateTime(event.date, event.time);
         popupName.textContent = event.name;
@@ -287,6 +291,8 @@ function eventPopUp(date, dayEvents) {
         popupBottom.appendChild(popupDesc);
         locationAndIcon.innerHTML = '<img src="./assets/location.png" alt="location" class="location-icon" />'
         locationAndIcon.appendChild(popupLocation);
+        participantsAndIcon.innerHTML = '<img src="./assets/people.png" alt="people" class="people-icon" />'
+        participantsAndIcon.appendChild(popupParticipants);
         popupBottomLinePopup.appendChild(popupParticipants);
         popupBottomLinePopup.appendChild(locationAndIcon);
         popupBottom.appendChild(popupBottomLinePopup);
