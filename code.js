@@ -91,6 +91,7 @@ window.addEventListener("load", () => {
     }
     // luz
     else if (document.getElementById("calendar")) {
+        const calendar = document.getElementById("calendar");
         // return button
         document.getElementById("arrow").addEventListener("click", () => {
             if (document.getElementById("week-title").textContent !== "") { //  from weekly -> choose week
@@ -134,7 +135,7 @@ function continueNav(event) {
         window.location.href = "index.html";
     })
 
-    let branchName = (event.target.id).slice(0, -4);
+    let branchName = event.currentTarget.id.slice(0, -4);
     branchName = mapToHebrew(branchName, "button");
     sessionStorage.setItem("branchName", branchName);
 
@@ -151,7 +152,7 @@ function continueNav(event) {
 }
 
 function luz(event) {
-    let type = (event.target.id).slice(0, -4);
+    let type = event.currentTarget.id.slice(0, -4);
     type = mapToHebrew(type, "button");
     sessionStorage.setItem("type", type);
     window.location.href = "calendar.html";
@@ -171,9 +172,6 @@ function createMonthlyCalendar() {
     document.getElementById("current-calendar-nav").innerHTML = 
         branchName && type ? `${mapToHebrew(branchName, "title")} - ${mapToHebrew(type, "title")}` : "";
 
-    // if (!branchName || !type) {
-    // window.location.href = "index.html";
-    // }   
 
     //get dates and elements
     const today = new Date();
@@ -222,7 +220,6 @@ function createMonthlyCalendar() {
         if (isToday) {
             cell.classList.add("today");
         }
-        cell.classList.add("day");
 
         const dateKey = formatDateKey(date);
 
@@ -242,12 +239,12 @@ function createMonthlyCalendar() {
 
         cell.addEventListener("click", () => {
             if (!dayEvents || dayEvents.length === 0) return;
-            eventPopUp(date, dayEvents);
+            eventPopUp(dayEvents);
         });
     }
 }
 
-function eventPopUp(date, dayEvents) {
+function eventPopUp(dayEvents) {
     document.getElementById("cover").style.display = "block";
     const popup = document.getElementById("event-popups");
     popup.innerHTML = '<img src="./assets/X.png" alt="X" id="x" />';
@@ -293,7 +290,7 @@ function eventPopUp(date, dayEvents) {
         locationAndIcon.appendChild(popupLocation);
         participantsAndIcon.innerHTML = '<img src="./assets/people.png" alt="people" class="people-icon" />'
         participantsAndIcon.appendChild(popupParticipants);
-        popupBottomLinePopup.appendChild(popupParticipants);
+        popupBottomLinePopup.appendChild(participantsAndIcon);
         popupBottomLinePopup.appendChild(locationAndIcon);
         popupBottom.appendChild(popupBottomLinePopup);
         popupCard.appendChild(popupTop);
@@ -310,6 +307,7 @@ function closePopup() {
     setTimeout(() => {
         document.getElementById("cover").style.display = "none";
         popup.classList.remove("popup-closing");
+        popup.innerHTML = "";
     }, 300);
 }
 
@@ -328,9 +326,10 @@ function createWeeklyCalendar() {
 
     //get all week numbers in this month
     for (let day = 1; day <= lastDay; day++) {
-        const date = new Date(year, month, day); +
+        const date = new Date(year, month, day);
             weeksSet.add(getWeekNumber(date));
     }
+    
     const weeks = Array.from(weeksSet).sort((a, b) => a - b);
 
     weeks.forEach(weekNum => {
@@ -386,7 +385,7 @@ function showWeek(weekNum, year) {
 
         row.addEventListener("click", () => {
             if (dayEvents.length) {
-                eventPopUp(dayDate, dayEvents);
+                eventPopUp(dayEvents);
             }
         });
 
@@ -601,7 +600,8 @@ function expandBranches(branches) {
 
     if (normalized.includes("ענפים")) {
         normalized = normalized.filter(b => b !== "ענפים");
-        normalized.push("חת''ק", "חיר ורקם");
+        // normalized.push("חת''ק", "חיר ורקם");
+        normalized.push(normalize("חת''ק"), normalize("חיר ורקם"));
     }
     return normalized;
 }
